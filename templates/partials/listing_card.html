@@ -1,0 +1,115 @@
+<div class="listing-card" id="listing-{{ listing.id }}">
+  <div class="listing-image-box">
+    <img src="{{ food_image(listing.food_key) }}" alt="{{ listing.food_name }}" class="listing-image" loading="lazy">
+    
+    <div class="listing-badges">
+      {% if listing.is_veg %}
+        <span class="badge-dietary badge-veg">🌿 Veg</span>
+      {% else %}
+        <span class="badge-dietary badge-nonveg">🍖 Non-Veg</span>
+      {% endif %}
+      {% include 'partials/status_badge.html' %}
+    </div>
+
+    {% if listing.status == 'OPEN' %}
+      <div class="listing-time-badge">
+        <span>⏱️</span>
+        <span data-expires="{{ listing.best_before.isoformat() }}Z">{{ listing.best_before | time_left }}</span>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="listing-card-body">
+    <h3 class="listing-title">{{ listing.food_name }}</h3>
+    <div class="listing-meta">
+      <span>🍽️ <strong>{{ listing.quantity }}</strong> plates</span>
+      <span>•</span>
+      <span>📍 {{ listing.city }}</span>
+    </div>
+
+    <div class="listing-details">
+      {% if viewer_role == 'donor' %}
+        <p><strong>Pickup Address:</strong> {{ listing.address }}</p>
+        {% if listing.claimed_by %}
+          <p><strong>Claimed By:</strong> {{ listing.claimed_by.name }}</p>
+          <p><strong>NGO Contact:</strong> <a href="tel:{{ listing.claimed_by.phone }}">{{ listing.claimed_by.phone }}</a></p>
+        {% else %}
+          <p class="text-muted">Awaiting nearby NGO claim.</p>
+        {% endif %}
+      {% elif viewer_role == 'receiver' %}
+        {% if listing.status == 'OPEN' %}
+          <p><strong>Area / City:</strong> {{ listing.city }}</p>
+          <p class="text-muted">Full pickup address will be revealed upon claiming.</p>
+        {% else %}
+          <p><strong>Donor:</strong> {{ listing.donor.name }}</p>
+          <p><strong>Donor Phone:</strong> <a href="tel:{{ listing.donor.phone }}">{{ listing.donor.phone }}</a></p>
+          <p><strong>Pickup Address:</strong> {{ listing.address }}</p>
+        {% endif %}
+      {% else %}
+        <p><strong>Donor:</strong> {{ listing.donor.name }} ({{ listing.donor.phone }})</p>
+        <p><strong>Address:</strong> {{ listing.address }}, {{ listing.city }}</p>
+        {% if listing.claimed_by %}
+          <p><strong>Receiver:</strong> {{ listing.claimed_by.name }} ({{ listing.claimed_by.phone }})</p>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <div class="listing-actions">
+      {# DONOR ACTIONS #}
+      {% if viewer_role == 'donor' %}
+        {% if listing.status == 'CLAIMED' %}
+          <form method="POST" action="{{ url_for('donor.dispatch', id=listing.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-secondary btn-block">
+              🚚 Food Dispatched / Handed Over
+            </button>
+          </form>
+        {% elif listing.status == 'DISPATCHED' %}
+          <div class="text-muted text-center" style="font-size: 0.85rem;">
+            ⏳ Awaiting NGO confirmation of collection.
+          </div>
+        {% elif listing.status == 'COLLECTED' %}
+          <div class="text-success text-center" style="font-size: 0.85rem; font-weight: 600;">
+            ✓ Donation Completed & Closed
+          </div>
+        {% elif listing.status == 'OPEN' %}
+          <div class="text-muted text-center" style="font-size: 0.85rem;">
+            Listing is active on NGO feed in {{ listing.city }}.
+          </div>
+        {% endif %}
+
+      {# RECEIVER ACTIONS #}
+      {% elif viewer_role == 'receiver' %}
+        {% if listing.status == 'OPEN' %}
+          {% if current_user.is_authenticated and current_user.is_approved %}
+            <form method="POST" action="{{ url_for('receiver.claim', id=listing.id) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="btn btn-primary btn-block">
+                Claim Food Now 🍽️
+              </button>
+            </form>
+          {% else %}
+            <a href="{{ url_for('receiver.pending') }}" class="btn btn-outline btn-block">
+              Approval Pending
+            </a>
+          {% endif %}
+        {% elif listing.status == 'DISPATCHED' and listing.claimed_by_id == current_user.id %}
+          <form method="POST" action="{{ url_for('receiver.collect', id=listing.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-primary btn-block">
+              ✓ Confirm Food Collected
+            </button>
+          </form>
+        {% elif listing.status == 'CLAIMED' and listing.claimed_by_id == current_user.id %}
+          <div class="text-muted text-center" style="font-size: 0.85rem;">
+            📞 Call donor at <strong>{{ listing.donor.phone }}</strong>. Donor will mark Dispatched on handover.
+          </div>
+        {% elif listing.status == 'COLLECTED' %}
+          <div class="text-success text-center" style="font-size: 0.85rem; font-weight: 600;">
+            ✓ Collected & Closed
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</div>

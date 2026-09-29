@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}My Claimed Meals - MealBridge v1{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+  <div>
+    <h1 style="font-size: 1.75rem; font-weight: 800;">My Claimed Food Donations</h1>
+    <p style="color: var(--gray-500); font-size: 0.95rem;">
+      Coordinate pickup with donors and confirm food collection when received.
+    </p>
+  </div>
+  <div>
+    <a href="{{ url_for('receiver.feed') }}" class="btn btn-primary">
+      🍽️ Browse Open Feed
+    </a>
+  </div>
+</div>
+
+{% if listings %}
+  <div class="listing-grid">
+    {% for listing in listings %}
+      {% include 'partials/listing_card.html' %}
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state">
+    <div style="font-size: 3rem; margin-bottom: 1rem;">📦</div>
+    <h3>You Haven't Claimed Any Meals Yet</h3>
+    <p>Check the active feed in your city to claim available cooked food.</p>
+    <a href="{{ url_for('receiver.feed') }}" class="btn btn-primary">
+      Go to Feed
+    </a>
+  </div>
+{% endif %}
+{% endblock %}

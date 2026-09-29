@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}MealBridge v1 - Connect Cooked Food to Local Communities{% endblock %}
+
+{% block content %}
+<div class="hero">
+  <div style="font-size: 3rem; margin-bottom: 0.5rem;">🍲</div>
+  <h1>Extra Cooked Food, Picked Up in Minutes</h1>
+  <p class="hero-lead">
+    A simple platform where restaurants, caterers, and event hosts post surplus cooked meals, and verified nearby NGOs claim and distribute them to families in need.
+  </p>
+
+  <div class="hero-actions">
+    <a href="{{ url_for('auth.signup') }}" class="btn btn-primary" style="padding: 0.8rem 1.75rem; font-size: 1.05rem;">
+      Get Started Now
+    </a>
+    <a href="{{ url_for('auth.login') }}" class="btn btn-outline" style="padding: 0.8rem 1.75rem; font-size: 1.05rem;">
+      Log In to Account
+    </a>
+  </div>
+</div>
+
+<div id="how-it-works" style="margin-top: 3rem;">
+  <div style="text-align: center; margin-bottom: 2rem;">
+    <h2 style="font-size: 1.85rem; font-weight: 800;">The Complete Product in 4 Simple Steps</h2>
+    <p style="color: var(--gray-500); font-size: 1rem;">No complicated apps, no friction. Just one reliable loop.</p>
+  </div>
+
+  <div class="loop-flow">
+    <div class="loop-step">
+      <div class="step-num">1</div>
+      <h3>Post</h3>
+      <p>Donor selects from 20 catalog meals, picks quantity and best-before time in under 30 seconds.</p>
+    </div>
+
+    <div class="loop-step">
+      <div class="step-num">2</div>
+      <h3>See</h3>
+      <p>Approved NGOs in the same city see the fresh listing immediately on their live city feed.</p>
+    </div>
+
+    <div class="loop-step">
+      <div class="step-num">3</div>
+      <h3>Claim</h3>
+      <p>The first NGO to tap Claim wins the listing. Contact details unlock instantly for coordination.</p>
+    </div>
+
+    <div class="loop-step">
+      <div class="step-num">4</div>
+      <h3>Collect</h3>
+      <p>Donor marks dispatched upon pickup; NGO confirms collection and closes the loop.</p>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="margin-top: 3rem; background: #ffffff; border-radius: var(--radius-lg); border-color: var(--gray-200);">
+  <div class="card-body" style="padding: 2.5rem; text-align: center;">
+    <h3 style="font-size: 1.5rem; margin-bottom: 0.75rem;">Are you a Restaurant, Caterer, or Community Kitchen?</h3>
+    <p style="color: var(--gray-500); max-width: 600px; margin: 0 auto 1.5rem;">
+      Join MealBridge to turn good food into warm meals for those who need it most.
+    </p>
+    <a href="{{ url_for('auth.signup') }}" class="btn btn-primary">
+      Join MealBridge Today
+    </a>
+  </div>
+</div>
+{% endblock %}

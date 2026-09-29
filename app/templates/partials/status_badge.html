@@ -1,0 +1,16 @@
+{% set badge_status = listing.status if listing else status %}
+<span class="status-badge status-{{ badge_status }}">
+  {% if badge_status == 'OPEN' %}
+    ● Open for Claim
+  {% elif badge_status == 'CLAIMED' %}
+    ⏳ Claimed (Awaiting Dispatch)
+  {% elif badge_status == 'DISPATCHED' %}
+    🚚 Dispatched (On the Way)
+  {% elif badge_status == 'COLLECTED' %}
+    ✓ Collected (Closed)
+  {% elif badge_status == 'EXPIRED' %}
+    ✕ Expired
+  {% else %}
+    {{ badge_status }}
+  {% endif %}
+</span>

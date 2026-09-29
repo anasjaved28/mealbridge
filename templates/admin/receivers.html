@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin - NGO Approvals - MealBridge v1{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+  <h1 style="font-size: 1.75rem; font-weight: 800;">NGO & Receiver Account Approvals</h1>
+  <p style="color: var(--gray-500); font-size: 0.95rem;">
+    Review and verify organizations before allowing them to claim cooked meals on the platform.
+  </p>
+</div>
+
+<!-- Pending Verification Table -->
+<div class="card" style="margin-bottom: 2.5rem;">
+  <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <h2 style="font-size: 1.15rem; font-weight: 700;">
+      Awaiting Verification ({{ pending_receivers|length }})
+    </h2>
+    <span class="role-pill role-receiver">Pending Actions</span>
+  </div>
+
+  <div class="card-body" style="padding: 0;">
+    {% if pending_receivers %}
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Organization</th>
+              <th>Contact Info</th>
+              <th>City</th>
+              <th>Registered</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for receiver in pending_receivers %}
+              <tr>
+                <td>
+                  <strong>{{ receiver.name }}</strong>
+                </td>
+                <td>
+                  <div><a href="mailto:{{ receiver.email }}">{{ receiver.email }}</a></div>
+                  <div style="font-size: 0.85rem; color: var(--gray-500);"><a href="tel:{{ receiver.phone }}">{{ receiver.phone }}</a></div>
+                </td>
+                <td>
+                  <span class="role-pill role-donor">{{ receiver.city }}</span>
+                </td>
+                <td style="font-size: 0.85rem; color: var(--gray-500);">
+                  {{ receiver.created_at.strftime('%Y-%m-%d %H:%M') }}
+                </td>
+                <td style="text-align: right;">
+                  <div style="display: inline-flex; gap: 0.5rem;">
+                    <form method="POST" action="{{ url_for('admin.approve', id=receiver.id) }}">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <button type="submit" class="btn btn-primary btn-sm">
+                        ✓ Approve
+                      </button>
+                    </form>
+                    <form method="POST" action="{{ url_for('admin.reject', id=receiver.id) }}" onsubmit="return confirm('Reject and remove this receiver?');">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                      <button type="submit" class="btn btn-danger btn-sm">
+                        ✕ Reject
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div style="padding: 2rem; text-align: center; color: var(--gray-500);">
+        ✓ No pending receiver registrations. All current NGO accounts are reviewed.
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Recently Approved Receivers -->
+<div class="card">
+  <div class="card-header">
+    <h2 style="font-size: 1.15rem; font-weight: 700;">Verified & Active Receivers ({{ approved_receivers|length }})</h2>
+  </div>
+
+  <div class="card-body" style="padding: 0;">
+    {% if approved_receivers %}
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Organization</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>City</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for receiver in approved_receivers %}
+              <tr>
+                <td><strong>{{ receiver.name }}</strong></td>
+                <td>{{ receiver.email }}</td>
+                <td>{{ receiver.phone }}</td>
+                <td>{{ receiver.city }}</td>
+                <td>
+                  <span class="role-pill role-donor">✓ Verified</span>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div style="padding: 2rem; text-align: center; color: var(--gray-500);">
+        No approved receivers yet.
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

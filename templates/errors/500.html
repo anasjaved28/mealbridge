@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Internal Server Error (500) - MealBridge v1{% endblock %}
+
+{% block content %}
+<div class="empty-state" style="max-width: 600px; margin: 3rem auto;">
+  <div style="font-size: 3.5rem; margin-bottom: 1rem;">⚠️</div>
+  <h2>500 - Server Error</h2>
+  <p>Something went wrong on our end. Please try refreshing or return to the main dashboard.</p>
+  <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem;">
+    <a href="{{ url_for('main.index') }}" class="btn btn-primary">Return to Homepage</a>
+  </div>
+</div>
+{% endblock %}

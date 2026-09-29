@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Access Denied (403) - MealBridge v1{% endblock %}
+
+{% block content %}
+<div class="empty-state" style="max-width: 600px; margin: 3rem auto;">
+  <div style="font-size: 3.5rem; margin-bottom: 1rem;">🚫</div>
+  <h2>403 - Access Restricted</h2>
+  <p>You do not have permission to view this resource. Your account role might not have authorization, or your NGO account may still be awaiting admin approval.</p>
+  <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem;">
+    <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+    <a href="{{ url_for('main.index') }}" class="btn btn-outline">Back to Home</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}Post Extra Food - MealBridge v1{% endblock %}
+
+{% block content %}
+<div style="max-width: 760px; margin: 0 auto;">
+  <div style="margin-bottom: 1.5rem;">
+    <a href="{{ url_for('donor.dashboard') }}" style="color: var(--gray-500); text-decoration: none; font-size: 0.9rem;">
+      ← Back to Dashboard
+    </a>
+    <h1 style="font-size: 1.75rem; font-weight: 800; margin-top: 0.5rem;">Post Surplus Cooked Food</h1>
+    <p style="color: var(--gray-500); font-size: 0.95rem;">
+      Pick the food item from our verified catalog below. No photo uploads needed!
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <form method="POST" action="{{ url_for('donor.new_listing') }}" id="newListingForm" novalidate>
+        {{ form.hidden_tag() }}
+
+        <!-- 1. Visual 20-Item Catalog Picker -->
+        <div class="form-group">
+          <label class="form-label" style="display: flex; justify-content: space-between;">
+            <span>1. Select Cooked Meal Item (Tap to choose)</span>
+            <span style="font-weight: 400; color: var(--gray-500); font-size: 0.8rem;">20 Predefined Categories</span>
+          </label>
+
+          <div class="food-picker-grid">
+            {% for food in catalog %}
+              <div class="food-picker-item" data-key="{{ food.key }}" data-name="{{ food.name }}" data-veg="{{ 'true' if food.is_veg else 'false' }}">
+                <img src="{{ food_image(food.key) }}" alt="{{ food.name }}" class="food-picker-img" loading="lazy">
+                <div class="food-picker-name">{{ food.name }}</div>
+                <div style="font-size: 0.7rem; color: {{ 'var(--primary)' if food.is_veg else 'var(--danger)' }}; font-weight: 700; margin-top: 2px;">
+                  {{ '🌿 Veg' if food.is_veg else '🍖 Non-Veg' }}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          <!-- Synchronized Select Field -->
+          <div style="display: none;">
+            {{ form.food_key(id="foodKeySelect") }}
+          </div>
+          {% for error in form.food_key.errors %}
+            <div class="form-error">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <!-- 2. Quantity (Plates) -->
+          <div class="form-group">
+            {{ form.quantity.label(class="form-label") }}
+            {{ form.quantity(class="form-control") }}
+            {% for error in form.quantity.errors %}
+              <div class="form-error">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- 3. Best Before (Hours) -->
+          <div class="form-group">
+            {{ form.best_before_hours.label(class="form-label") }}
+            {{ form.best_before_hours(class="form-control") }}
+            {% for error in form.best_before_hours.errors %}
+              <div class="form-error">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <!-- 4. City -->
+          <div class="form-group">
+            {{ form.city.label(class="form-label") }}
+            {{ form.city(class="form-control") }}
+            {% for error in form.city.errors %}
+              <div class="form-error">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- 5. Veg / Non-Veg Toggle -->
+          <div class="form-group" style="display: flex; flex-direction: column; justify-content: center;">
+            <label class="form-label">Dietary Classification</label>
+            <label class="form-check" style="margin-top: 0.5rem;">
+              {{ form.is_veg(id="isVegCheckbox") }}
+              <span style="font-size: 0.95rem; font-weight: 600;">Vegetarian Meal</span>
+            </label>
+            {% for error in form.is_veg.errors %}
+              <div class="form-error">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- 6. Pickup Address (Only free text) -->
+        <div class="form-group">
+          {{ form.address.label(class="form-label") }}
+          {{ form.address(class="form-control") }}
+          <div style="font-size: 0.8rem; color: var(--gray-500); margin-top: 0.25rem;">
+            Provide exact gate, door, or landmark details for the collecting NGO team.
+          </div>
+          {% for error in form.address.errors %}
+            <div class="form-error">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="padding: 0.85rem; font-size: 1.05rem;">
+          Publish Food Listing Now
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const items = document.querySelectorAll(".food-picker-item");
+  const select = document.getElementById("foodKeySelect");
+  const vegCheckbox = document.getElementById("isVegCheckbox");
+
+  function selectItem(item) {
+    items.forEach(el => el.classList.remove("selected"));
+    item.classList.add("selected");
+    const key = item.getAttribute("data-key");
+    const isVeg = item.getAttribute("data-veg") === "true";
+
+    if (select) {
+      select.value = key;
+    }
+    if (vegCheckbox) {
+      vegCheckbox.checked = isVeg;
+    }
+  }
+
+  items.forEach(item => {
+    item.addEventListener("click", function () {
+      selectItem(this);
+    });
+  });
+
+  // Pre-select first item or current select value
+  const initialValue = select ? select.value : null;
+  let target = initialValue ? document.querySelector(`.food-picker-item[data-key="${initialValue}"]`) : null;
+  if (!target && items.length > 0) {
+    target = items[0];
+  }
+  if (target) {
+    selectItem(target);
+  }
+});
+</script>
+{% endblock %}

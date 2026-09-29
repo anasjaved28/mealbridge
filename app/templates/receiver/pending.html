@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Account Pending Approval - MealBridge v1{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper" style="max-width: 540px; text-align: center;">
+  <div class="card" style="padding: 2.5rem 1.5rem;">
+    <div style="font-size: 3.5rem; margin-bottom: 1rem;">⏳</div>
+    <h1 style="font-size: 1.65rem; font-weight: 800; margin-bottom: 0.75rem;">
+      Account Awaiting Admin Approval
+    </h1>
+    <p style="color: var(--gray-500); font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+      Thank you for registering <strong>{{ current_user.name }}</strong> with MealBridge.
+      To ensure food safety and legitimate community distribution, all NGO/receiver accounts undergo a quick administrative review before claiming can begin.
+    </p>
+
+    <div style="background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius-md); padding: 1rem; text-align: left; margin-bottom: 1.5rem; font-size: 0.9rem;">
+      <p style="margin-bottom: 0.4rem;"><strong>Organization:</strong> {{ current_user.name }}</p>
+      <p style="margin-bottom: 0.4rem;"><strong>Contact Phone:</strong> {{ current_user.phone }}</p>
+      <p style="margin-bottom: 0.4rem;"><strong>Registered City:</strong> {{ current_user.city }}</p>
+      <p style="margin-bottom: 0;"><strong>Status:</strong> <span class="role-pill role-receiver">Pending Verification</span></p>
+    </div>
+
+    <div style="display: flex; justify-content: center; gap: 1rem;">
+      <a href="{{ url_for('receiver.pending') }}" class="btn btn-primary">
+        🔄 Check Approval Status
+      </a>
+      <a href="{{ url_for('auth.logout') }}" class="btn btn-outline">
+        Log Out
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MealBridge v1 - Surplus Food Rescue{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="{{ url_for('main.index') }}" class="brand-logo">
+        <span>🍲</span> MealBridge <span class="brand-badge">v1</span>
+      </a>
+
+      <ul class="nav-links">
+        {% if current_user.is_authenticated %}
+          {% if current_user.is_donor %}
+            <li><a href="{{ url_for('donor.dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('donor.new_listing') }}" class="btn btn-primary btn-sm">+ Post Food</a></li>
+          {% elif current_user.is_receiver %}
+            {% if current_user.is_approved %}
+              <li><a href="{{ url_for('receiver.feed') }}">Open Feed</a></li>
+              <li><a href="{{ url_for('receiver.my_claims') }}">My Claims</a></li>
+            {% else %}
+              <li><a href="{{ url_for('receiver.pending') }}">Pending Status</a></li>
+            {% endif %}
+          {% elif current_user.is_admin %}
+            <li><a href="{{ url_for('admin.receivers') }}">NGO Approvals</a></li>
+          {% endif %}
+
+          <li class="nav-user">
+            <span class="role-pill role-{{ current_user.role }}">
+              {{ current_user.role }} • {{ current_user.city }}
+            </span>
+            <span style="font-size: 0.9rem; font-weight: 600;">{{ current_user.name }}</span>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-outline btn-sm">Log Out</a>
+          </li>
+        {% else %}
+          <li><a href="{{ url_for('main.index') }}#how-it-works">How It Works</a></li>
+          <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
+          <li><a href="{{ url_for('auth.signup') }}" class="btn btn-primary btn-sm">Sign Up</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Flash Messages Banner -->
+  <div class="container flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category if category != 'error' else 'danger' }}">
+            <span>{{ message }}</span>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Main Body Content -->
+  <main>
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>
+        <strong>MealBridge v1</strong> &copy; 2026 • The single food donation loop: <strong>Post → See → Claim → Collect</strong>
+      </p>
+      <p style="margin-top: 0.25rem; font-size: 0.8rem; color: var(--gray-400);">
+        Zero food waste. Feeding communities with dignity.
+      </p>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/countdown.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

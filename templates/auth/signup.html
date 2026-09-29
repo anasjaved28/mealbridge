@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up - MealBridge v1{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper" style="max-width: 540px;">
+  <div class="card">
+    <div class="card-header">
+      <h2 style="font-size: 1.35rem; font-weight: 700;">Join MealBridge</h2>
+      <p style="font-size: 0.875rem; color: var(--gray-500);">Register as a Food Donor or a Verified Food Receiver (NGO).</p>
+    </div>
+
+    <div class="card-body">
+      <form method="POST" action="{{ url_for('auth.signup') }}" novalidate>
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+          {{ form.role.label(class="form-label") }}
+          {{ form.role(class="form-control", id="roleSelect") }}
+          <div style="font-size: 0.8rem; color: var(--gray-500); margin-top: 0.25rem;">
+            * Receivers require one-time admin approval to ensure food safety and legitimate distribution.
+          </div>
+          {% for error in form.role.errors %}
+            <div class="form-error">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          {{ form.name.label(class="form-label") }}
+          {{ form.name(class="form-control") }}
+          {% for error in form.name.errors %}
+            <div class="form-error">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          {{ form.email.label(class="form-label") }}
+          {{ form.email(class="form-control") }}
+          {% for error in form.email.errors %}
+            <div class="form-error">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          {{ form.phone.label(class="form-label") }}
+          {{ form.phone(class="form-control") }}
+          {% for error in form.phone.errors %}
+            <div class="form-error">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          {{ form.city.label(class="form-label") }}
+          {{ form.city(class="form-control") }}
+          {% for error in form.city.errors %}
+            <div class="form-error">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          {{ form.password.label(class="form-label") }}
+          {{ form.password(class="form-control") }}
+          {% for error in form.password.errors %}
+            <div class="form-error">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          {{ form.password_confirm.label(class="form-label") }}
+          {{ form.password_confirm(class="form-control") }}
+          {% for error in form.password_confirm.errors %}
+            <div class="form-error">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="padding: 0.75rem;">
+          Complete Registration
+        </button>
+      </form>
+
+      <div style="margin-top: 1.5rem; text-align: center; font-size: 0.875rem; color: var(--gray-500);">
+        Already registered? <a href="{{ url_for('auth.login') }}" style="color: var(--primary); font-weight: 600;">Log in here</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
