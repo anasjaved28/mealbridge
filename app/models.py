@@ -93,6 +93,8 @@ class Listing(db.Model):
     city = db.Column(db.String(50), nullable=False, index=True)
     best_before = db.Column(db.DateTime, nullable=False, index=True)
     status = db.Column(db.String(20), nullable=False, default=OPEN, index=True)
+    packaging_type = db.Column(db.String(50), nullable=False, default="packets")
+    pickup_pin = db.Column(db.String(4), nullable=True)
 
     donor_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     claimed_by_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)

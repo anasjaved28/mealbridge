@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import SelectField, BooleanField, TextAreaField, SubmitField
 from wtforms.validators import DataRequired, Length
-from app.catalog import FOODS, CITIES, QUANTITY_CHOICES, BEST_BEFORE_CHOICES
+from app.catalog import FOODS, CITIES, QUANTITY_CHOICES, BEST_BEFORE_CHOICES, PACKAGING_CHOICES
 
 
 class ListingForm(FlaskForm):
@@ -15,6 +15,12 @@ class ListingForm(FlaskForm):
         validators=[DataRequired()],
         coerce=int,
         choices=QUANTITY_CHOICES,
+    )
+    packaging_type = SelectField(
+        "Packaging Type (Container / Packets)",
+        validators=[DataRequired()],
+        choices=PACKAGING_CHOICES,
+        default="packets",
     )
     is_veg = BooleanField(
         "Vegetarian Meal",

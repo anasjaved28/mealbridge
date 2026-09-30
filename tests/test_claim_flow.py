@@ -147,9 +147,15 @@ def test_complete_loop_post_see_claim_dispatch_collect(client, auth, app):
     assert b"cannot be collected yet" in premature_collect.data or b"Dispatched" in premature_collect.data
     auth.logout()
 
-    # Step 4: Donor dispatches
+    with app.app_context():
+        current_listing = db.session.get(Listing, listing_id)
+        pin = current_listing.pickup_pin
+        assert pin is not None
+        assert len(pin) == 4
+
+    # Step 4: Donor dispatches with verified PIN
     auth.login("donor@test.com", "test1234")
-    dispatch_res = client.post(f"/donor/dispatch/{listing_id}", follow_redirects=True)
+    dispatch_res = client.post(f"/donor/dispatch/{listing_id}", data={"pin": pin}, follow_redirects=True)
     assert b"Dispatched" in dispatch_res.data
     auth.logout()
 

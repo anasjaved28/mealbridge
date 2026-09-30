@@ -201,6 +201,26 @@ BEST_BEFORE_CHOICES = [
     (24, "24 hours (refrigerated)"),
 ]
 
+PACKAGING_PACKETS = "packets"
+PACKAGING_VESSELS = "vessels"
+PACKAGING_TRAYS = "trays"
+
+PACKAGING_CHOICES = [
+    (PACKAGING_PACKETS, "Individual Packets / Foil Boxes (ready to hand out)"),
+    (PACKAGING_VESSELS, "Large Catering Vessels (bring own containers)"),
+    (PACKAGING_TRAYS, "Disposable Trays"),
+]
+
+PACKAGING_LABELS = {
+    "packets": "📦 Packets / Foil Boxes",
+    "vessels": "🍲 Large Vessels (Bring Containers)",
+    "trays": "🍱 Disposable Trays",
+}
+
+
+def get_packaging_label(key):
+    return PACKAGING_LABELS.get(key, "📦 Meal Packets")
+
 
 def food_image(key):
     """Jinja helper returning the static asset URL for a food image."""

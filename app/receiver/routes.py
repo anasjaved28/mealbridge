@@ -43,6 +43,9 @@ def feed():
 def claim(id):
     now = utc_now()
 
+    import random
+    handover_pin = f"{random.randint(1000, 9999)}"
+
     # Atomic claim: first to claim wins; checks status, expiry, and matching city in a single DB query
     rows_updated = (
         Listing.query.filter(
@@ -56,6 +59,7 @@ def claim(id):
                 Listing.status: CLAIMED,
                 Listing.claimed_by_id: current_user.id,
                 Listing.claimed_at: now,
+                Listing.pickup_pin: handover_pin,
             },
             synchronize_session=False,
         )
