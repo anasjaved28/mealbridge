@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+
+{% block title %}Donation Certificate #MB-{{ "%06d" | format(listing.id) }} - MealBridge{% endblock %}
+
+{% block extra_head %}
+<style>
+  .certificate-wrapper {
+    max-width: 820px;
+    margin: 2rem auto;
+    background: #ffffff;
+    border: 8px double #059669;
+    border-radius: 12px;
+    padding: 3rem 2.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    position: relative;
+    background-image: radial-gradient(#ecfdf5 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .certificate-header {
+    text-align: center;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .cert-logo {
+    font-size: 2.75rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .cert-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #065f46;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+
+  .cert-subtitle {
+    color: #6b7280;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+
+  .cert-recipient {
+    text-align: center;
+    margin: 2rem 0;
+  }
+
+  .cert-recipient h2 {
+    font-size: 2.2rem;
+    color: #111827;
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: 8px;
+    text-decoration-color: #10b981;
+    margin: 0.5rem 0;
+  }
+
+  .cert-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .cert-detail-item {
+    font-size: 0.95rem;
+  }
+
+  .cert-detail-label {
+    color: #6b7280;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .cert-detail-val {
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  .cert-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .cert-sign-line {
+    border-top: 1.5px solid #374151;
+    width: 200px;
+    text-align: center;
+    padding-top: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #4b5563;
+  }
+
+  .cert-seal {
+    width: 90px;
+    height: 90px;
+    border: 3px dashed #10b981;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #059669;
+    font-weight: 800;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    transform: rotate(-10deg);
+  }
+
+  @media print {
+    .navbar, footer, .no-print {
+      display: none !important;
+    }
+    body {
+      background: #ffffff !important;
+      padding: 0 !important;
+    }
+    .certificate-wrapper {
+      box-shadow: none !important;
+      border-width: 4px !important;
+      margin: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="no-print" style="max-width: 820px; margin: 0 auto 1rem; display: flex; justify-content: space-between; align-items: center;">
+  <a href="{{ url_for('donor.dashboard') }}" style="color: var(--gray-600); text-decoration: none; font-weight: 600;">
+    ← Back to Dashboard
+  </a>
+  <button onclick="window.print()" class="btn btn-primary">
+    🖨️ Print / Save as PDF
+  </button>
+</div>
+
+<div class="certificate-wrapper">
+  <div class="certificate-header">
+    <div class="cert-logo">🍲</div>
+    <h1 class="cert-title">Certificate of Food Donation</h1>
+    <div class="cert-subtitle">Official CSR & Community Food Rescue Receipt</div>
+    <div style="font-size: 0.8rem; color: #6b7280; margin-top: 0.5rem;">
+      Receipt Ref: <strong>#MB-{{ "%06d" | format(listing.id) }}</strong> • Verified by MealBridge Platform
+    </div>
+  </div>
+
+  <div class="cert-recipient">
+    <div style="font-size: 1rem; color: #4b5563;">This certificate of recognition is proudly presented to</div>
+    <h2>{{ listing.donor.name }}</h2>
+    <div style="color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem;">
+      {{ listing.city }} • Donor Partner
+    </div>
+  </div>
+
+  <p style="text-align: center; max-width: 620px; margin: 0 auto; color: #4b5563; font-size: 1.05rem; line-height: 1.6;">
+    For the generous donation and rescue of high-quality cooked meals, preventing edible food waste and supporting local communities in need.
+  </p>
+
+  <div class="cert-details-grid">
+    <div class="cert-detail-item">
+      <div class="cert-detail-label">Meal Description</div>
+      <div class="cert-detail-val">
+        {{ listing.food_name }} ({{ '🌿 Vegetarian' if listing.is_veg else '🍖 Non-Vegetarian' }})
+      </div>
+    </div>
+    <div class="cert-detail-item">
+      <div class="cert-detail-label">Quantity Contributed</div>
+      <div class="cert-detail-val" style="color: #059669; font-size: 1.15rem;">
+        {{ listing.quantity }} Plates (~{{ (listing.quantity * 0.45) | round(1) }} kg)
+      </div>
+    </div>
+    <div class="cert-detail-item">
+      <div class="cert-detail-label">Packaging Type</div>
+      <div class="cert-detail-val">
+        {{ listing.packaging_type | packaging_label }}
+      </div>
+    </div>
+    <div class="cert-detail-item">
+      <div class="cert-detail-label">Beneficiary NGO Partner</div>
+      <div class="cert-detail-val">
+        {{ listing.claimed_by.name if listing.claimed_by else 'Verified Community NGO' }}
+      </div>
+    </div>
+    <div class="cert-detail-item">
+      <div class="cert-detail-label">Pickup Location</div>
+      <div class="cert-detail-val">
+        {{ listing.address }}, {{ listing.city }}
+      </div>
+    </div>
+    <div class="cert-detail-item">
+      <div class="cert-detail-label">Collection Timestamp</div>
+      <div class="cert-detail-val">
+        {{ listing.collected_at.strftime('%d %B %Y at %I:%M %p UTC') if listing.collected_at else listing.created_at.strftime('%d %B %Y') }}
+      </div>
+    </div>
+  </div>
+
+  <div class="cert-footer">
+    <div class="cert-sign-line">
+      <div>MealBridge Platform</div>
+      <small style="color: #9ca3af;">Authorized Verification</small>
+    </div>
+
+    <div class="cert-seal">
+      <div>✓ VERIFIED<br>RESCUE</div>
+    </div>
+
+    <div class="cert-sign-line">
+      <div>{{ listing.claimed_by.name if listing.claimed_by else 'Receiving NGO' }}</div>
+      <small style="color: #9ca3af;">Distribution Partner</small>
+    </div>
+  </div>
+</div>
+{% endblock %}

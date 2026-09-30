@@ -799,3 +799,72 @@ footer {
   margin-top: 0.25rem;
 }
 
+/* Packaging Type Badge */
+.badge-packaging {
+  font-size: 0.8rem;
+  color: #4b5563;
+  font-weight: 600;
+  background: #f3f4f6;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+}
+
+/* Handover PIN Badge (Receiver Side) */
+.handover-pin-badge {
+  background: #fefce8;
+  border: 2px dashed #ca8a04;
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+  text-align: center;
+  margin-top: 0.75rem;
+}
+
+.pin-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #854d0e;
+  letter-spacing: 1px;
+}
+
+.pin-digits {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: #713f12;
+  letter-spacing: 6px;
+  font-family: monospace, monospace;
+  margin: 0.25rem 0;
+}
+
+.pin-help {
+  font-size: 0.78rem;
+  color: #a16207;
+  display: block;
+}
+
+/* Donor PIN Form (Donor Side) */
+.donor-pin-form {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.pin-input-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.pin-input {
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  font-family: monospace, monospace;
+  max-width: 130px;
+}
+

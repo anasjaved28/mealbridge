@@ -68,7 +68,16 @@
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-          <!-- 4. City -->
+          <!-- 4. Packaging Type -->
+          <div class="form-group">
+            {{ form.packaging_type.label(class="form-label") }}
+            {{ form.packaging_type(class="form-control") }}
+            {% for error in form.packaging_type.errors %}
+              <div class="form-error">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- 5. City -->
           <div class="form-group">
             {{ form.city.label(class="form-label") }}
             {{ form.city(class="form-control") }}
@@ -76,8 +85,10 @@
               <div class="form-error">{{ error }}</div>
             {% endfor %}
           </div>
+        </div>
 
-          <!-- 5. Veg / Non-Veg Toggle -->
+        <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+          <!-- 6. Veg / Non-Veg Toggle -->
           <div class="form-group" style="display: flex; flex-direction: column; justify-content: center;">
             <label class="form-label">Dietary Classification</label>
             <label class="form-check" style="margin-top: 0.5rem;">
