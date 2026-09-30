@@ -29,21 +29,45 @@
 
     <div class="listing-details">
       {% if viewer_role == 'donor' %}
-        <p><strong>Pickup Address:</strong> {{ listing.address }}</p>
+        <p>
+          <strong>Pickup Address:</strong> {{ listing.address }}
+          <a href="https://www.google.com/maps/search/?api=1&query={{ (listing.address ~ ', ' ~ listing.city) | urlencode }}" 
+             target="_blank" rel="noopener noreferrer" class="link-action" title="Open in Google Maps">
+             📍 Maps
+          </a>
+        </p>
         {% if listing.claimed_by %}
           <p><strong>Claimed By:</strong> {{ listing.claimed_by.name }}</p>
-          <p><strong>NGO Contact:</strong> <a href="tel:{{ listing.claimed_by.phone }}">{{ listing.claimed_by.phone }}</a></p>
+          <div class="contact-action-row">
+            <span><strong>NGO Contact:</strong> <a href="tel:{{ listing.claimed_by.phone }}">{{ listing.claimed_by.phone }}</a></span>
+            <a href="https://wa.me/{{ listing.claimed_by.phone | clean_phone }}?text={{ ('Hi ' ~ listing.claimed_by.name ~ ', this is ' ~ current_user.name ~ ' regarding your MealBridge claim for ' ~ listing.food_name ~ '.') | urlencode }}" 
+               target="_blank" rel="noopener noreferrer" class="badge-action badge-whatsapp" title="Chat on WhatsApp">
+               💬 WhatsApp
+            </a>
+          </div>
         {% else %}
           <p class="text-muted">Awaiting nearby NGO claim.</p>
         {% endif %}
       {% elif viewer_role == 'receiver' %}
         {% if listing.status == 'OPEN' %}
           <p><strong>Area / City:</strong> {{ listing.city }}</p>
-          <p class="text-muted">Full pickup address will be revealed upon claiming.</p>
+          <p class="text-muted">Full pickup address and donor contact will be revealed upon claiming.</p>
         {% else %}
           <p><strong>Donor:</strong> {{ listing.donor.name }}</p>
-          <p><strong>Donor Phone:</strong> <a href="tel:{{ listing.donor.phone }}">{{ listing.donor.phone }}</a></p>
-          <p><strong>Pickup Address:</strong> {{ listing.address }}</p>
+          <div class="contact-action-row">
+            <span><strong>Donor Phone:</strong> <a href="tel:{{ listing.donor.phone }}">{{ listing.donor.phone }}</a></span>
+            <a href="https://wa.me/{{ listing.donor.phone | clean_phone }}?text={{ ('Hi ' ~ listing.donor.name ~ ', this is ' ~ current_user.name ~ ' from the NGO team. We have claimed your ' ~ listing.food_name ~ ' on MealBridge!') | urlencode }}" 
+               target="_blank" rel="noopener noreferrer" class="badge-action badge-whatsapp" title="Chat on WhatsApp">
+               💬 WhatsApp
+            </a>
+          </div>
+          <div class="contact-action-row" style="margin-top: 0.35rem;">
+            <span><strong>Pickup Address:</strong> {{ listing.address }}</span>
+            <a href="https://www.google.com/maps/search/?api=1&query={{ (listing.address ~ ', ' ~ listing.city) | urlencode }}" 
+               target="_blank" rel="noopener noreferrer" class="badge-action badge-maps" title="Open in Google Maps">
+               📍 Open in Maps
+            </a>
+          </div>
         {% endif %}
       {% else %}
         <p><strong>Donor:</strong> {{ listing.donor.name }} ({{ listing.donor.phone }})</p>
@@ -101,8 +125,17 @@
             </button>
           </form>
         {% elif listing.status == 'CLAIMED' and listing.claimed_by_id == current_user.id %}
-          <div class="text-muted text-center" style="font-size: 0.85rem;">
-            📞 Call donor at <strong>{{ listing.donor.phone }}</strong>. Donor will mark Dispatched on handover.
+          <div class="text-muted text-center" style="font-size: 0.85rem; margin-bottom: 0.6rem;">
+            Coordinate pickup with donor. Donor will mark Dispatched on handover.
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+            <a href="tel:{{ listing.donor.phone }}" class="btn btn-outline btn-sm">
+              📞 Call Donor
+            </a>
+            <a href="https://wa.me/{{ listing.donor.phone | clean_phone }}?text={{ ('Hi ' ~ listing.donor.name ~ ', this is ' ~ current_user.name ~ ' from the NGO team. We have claimed your ' ~ listing.food_name ~ ' on MealBridge!') | urlencode }}" 
+               target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm">
+              💬 WhatsApp
+            </a>
           </div>
         {% elif listing.status == 'COLLECTED' %}
           <div class="text-success text-center" style="font-size: 0.85rem; font-weight: 600;">

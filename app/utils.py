@@ -63,3 +63,15 @@ def time_left(dt):
         return f"{minutes}m"
     else:
         return "< 1m"
+
+
+def clean_phone(phone_str):
+    """
+    Sanitize a phone string to raw digits for wa.me WhatsApp links.
+    e.g. '+91 98888 11111' -> '919888811111'
+    """
+    if not phone_str:
+        return ""
+    import re
+    return re.sub(r"[^\d]", "", str(phone_str))
+

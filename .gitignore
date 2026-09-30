@@ -44,3 +44,7 @@ htmlcov/
 .idea/
 *.swp
 *.swo
+
+# External / Scratch tests
+demoqa*
+

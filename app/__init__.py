@@ -25,8 +25,10 @@ def create_app(config_name="default"):
     csrf.init_app(app)
 
     # Register Jinja globals and filters
+    from app.utils import time_left, clean_phone
     app.jinja_env.globals.update(food_image=food_image)
     app.jinja_env.filters["time_left"] = time_left
+    app.jinja_env.filters["clean_phone"] = clean_phone
 
     # Register blueprints
     from app.main.routes import main_bp
