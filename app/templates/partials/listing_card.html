@@ -4,16 +4,16 @@
     
     <div class="listing-badges">
       {% if listing.is_veg %}
-        <span class="badge-dietary badge-veg">🌿 Veg</span>
+        <span class="badge-dietary badge-veg"><i class="bi bi-circle-fill" style="font-size: 0.65rem;"></i> Veg</span>
       {% else %}
-        <span class="badge-dietary badge-nonveg">🍖 Non-Veg</span>
+        <span class="badge-dietary badge-nonveg"><i class="bi bi-triangle-fill" style="font-size: 0.65rem;"></i> Non-Veg</span>
       {% endif %}
       {% include 'partials/status_badge.html' %}
     </div>
 
     {% if listing.status == 'OPEN' %}
       <div class="listing-time-badge">
-        <span>⏱️</span>
+        <span><i class="bi bi-clock-history"></i></span>
         <span data-expires="{{ listing.best_before.isoformat() }}Z">{{ listing.best_before | time_left }}</span>
       </div>
     {% endif %}
@@ -22,11 +22,11 @@
   <div class="listing-card-body">
     <h3 class="listing-title">{{ listing.food_name }}</h3>
     <div class="listing-meta">
-      <span>🍽️ <strong>{{ listing.quantity }}</strong> plates</span>
+      <span><i class="bi bi-people-fill text-muted"></i> <strong>{{ listing.quantity }}</strong> plates</span>
       <span>•</span>
-      <span>📍 {{ listing.city }}</span>
+      <span><i class="bi bi-geo-alt-fill text-primary" style="font-size: 0.85rem;"></i> {{ listing.city }}</span>
       <span>•</span>
-      <span class="badge-packaging">{{ listing.packaging_type | packaging_label }}</span>
+      <span class="badge-packaging"><i class="bi bi-box-seam"></i> {{ listing.packaging_type | packaging_label }}</span>
     </div>
 
     <div class="listing-details">
@@ -35,16 +35,16 @@
           <strong>Pickup Address:</strong> {{ listing.address }}
           <a href="https://www.google.com/maps/search/?api=1&query={{ (listing.address ~ ', ' ~ listing.city) | urlencode }}" 
              target="_blank" rel="noopener noreferrer" class="link-action" title="Open in Google Maps">
-             📍 Maps
+             <i class="bi bi-geo-alt-fill"></i> Maps
           </a>
         </p>
         {% if listing.claimed_by %}
           <p><strong>Claimed By:</strong> {{ listing.claimed_by.name }}</p>
           <div class="contact-action-row">
-            <span><strong>NGO Contact:</strong> <a href="tel:{{ listing.claimed_by.phone }}">{{ listing.claimed_by.phone }}</a></span>
+            <span><strong>NGO Contact:</strong> <a href="tel:{{ listing.claimed_by.phone }}"><i class="bi bi-telephone-fill"></i> {{ listing.claimed_by.phone }}</a></span>
             <a href="https://wa.me/{{ listing.claimed_by.phone | clean_phone }}?text={{ ('Hi ' ~ listing.claimed_by.name ~ ', this is ' ~ current_user.name ~ ' regarding your MealBridge claim for ' ~ listing.food_name ~ '.') | urlencode }}" 
                target="_blank" rel="noopener noreferrer" class="badge-action badge-whatsapp" title="Chat on WhatsApp">
-               💬 WhatsApp
+               <i class="bi bi-whatsapp"></i> WhatsApp
             </a>
           </div>
         {% else %}
@@ -58,33 +58,33 @@
         {% else %}
           <p><strong>Donor:</strong> {{ listing.donor.name }}</p>
           <div class="contact-action-row">
-            <span><strong>Donor Phone:</strong> <a href="tel:{{ listing.donor.phone }}">{{ listing.donor.phone }}</a></span>
+            <span><strong>Donor Phone:</strong> <a href="tel:{{ listing.donor.phone }}"><i class="bi bi-telephone-fill"></i> {{ listing.donor.phone }}</a></span>
             <a href="https://wa.me/{{ listing.donor.phone | clean_phone }}?text={{ ('Hi ' ~ listing.donor.name ~ ', this is ' ~ current_user.name ~ ' from the NGO team. We have claimed your ' ~ listing.food_name ~ ' on MealBridge!') | urlencode }}" 
                target="_blank" rel="noopener noreferrer" class="badge-action badge-whatsapp" title="Chat on WhatsApp">
-               💬 WhatsApp
+               <i class="bi bi-whatsapp"></i> WhatsApp
             </a>
           </div>
           <div class="contact-action-row" style="margin-top: 0.35rem;">
             <span><strong>Pickup Address:</strong> {{ listing.address }}</span>
             <a href="https://www.google.com/maps/search/?api=1&query={{ (listing.address ~ ', ' ~ listing.city) | urlencode }}" 
                target="_blank" rel="noopener noreferrer" class="badge-action badge-maps" title="Open in Google Maps">
-               📍 Open in Maps
+               <i class="bi bi-geo-alt-fill"></i> Open in Maps
             </a>
           </div>
 
           {% if listing.pickup_pin and listing.claimed_by_id == current_user.id and listing.status in ['CLAIMED', 'DISPATCHED'] %}
             <div class="handover-pin-badge">
-              <div class="pin-title">🔑 HANDOVER PIN</div>
+              <div class="pin-title"><i class="bi bi-shield-lock-fill"></i> HANDOVER PIN</div>
               <div class="pin-digits">{{ listing.pickup_pin }}</div>
               <small class="pin-help">Tell this 4-digit code to donor at kitchen pickup</small>
             </div>
           {% endif %}
         {% endif %}
       {% else %}
-        <p><strong>Donor:</strong> {{ listing.donor.name }} ({{ listing.donor.phone }})</p>
+        <p><strong>Donor:</strong> {{ listing.donor.name }} (<i class="bi bi-telephone"></i> {{ listing.donor.phone }})</p>
         <p><strong>Address:</strong> {{ listing.address }}, {{ listing.city }}</p>
         {% if listing.claimed_by %}
-          <p><strong>Receiver:</strong> {{ listing.claimed_by.name }} ({{ listing.claimed_by.phone }})</p>
+          <p><strong>Receiver:</strong> {{ listing.claimed_by.name }} (<i class="bi bi-telephone"></i> {{ listing.claimed_by.phone }})</p>
         {% endif %}
       {% endif %}
     </div>
@@ -96,36 +96,36 @@
           <form method="POST" action="{{ url_for('donor.dispatch', id=listing.id) }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="donor-pin-form">
-              <label class="pin-input-label">Enter NGO's 4-Digit Handover PIN:</label>
+              <label class="pin-input-label"><i class="bi bi-key-fill"></i> Enter NGO's 4-Digit Handover PIN:</label>
               <div style="display: flex; gap: 0.5rem;">
                 <input type="text" name="pin" placeholder="••••" maxlength="4" required class="form-control pin-input">
                 <button type="submit" class="btn btn-secondary btn-sm" style="flex: 1;">
-                  Verify & Dispatch 🚚
+                  <i class="bi bi-truck"></i> Verify & Dispatch
                 </button>
               </div>
             </div>
           </form>
         {% elif listing.status == 'DISPATCHED' %}
           <div class="text-muted text-center" style="font-size: 0.85rem;">
-            ⏳ Awaiting NGO confirmation of collection.
+            <i class="bi bi-hourglass-split"></i> Awaiting NGO confirmation of collection.
           </div>
         {% elif listing.status == 'COLLECTED' %}
           <div class="text-success text-center" style="font-size: 0.85rem; font-weight: 600;">
-            ✓ Donation Completed & Closed
+            <i class="bi bi-check-circle-fill"></i> Donation Completed & Closed
           </div>
           <a href="{{ url_for('donor.receipt', id=listing.id) }}" class="btn btn-outline btn-block btn-sm" target="_blank" style="margin-top: 0.4rem;">
-            📄 View CSR / Tax Receipt
+            <i class="bi bi-file-earmark-medical"></i> View CSR / Tax Receipt
           </a>
           <a href="{{ url_for('donor.new_listing', repost_id=listing.id) }}" class="btn btn-outline btn-block btn-sm" style="margin-top: 0.35rem;">
-            🔁 Re-list This Meal
+            <i class="bi bi-arrow-repeat"></i> Re-list This Meal
           </a>
         {% elif listing.status == 'EXPIRED' %}
           <a href="{{ url_for('donor.new_listing', repost_id=listing.id) }}" class="btn btn-outline btn-block btn-sm" style="margin-top: 0.35rem;">
-            🔁 Re-list This Meal
+            <i class="bi bi-arrow-repeat"></i> Re-list This Meal
           </a>
         {% elif listing.status == 'OPEN' %}
           <div class="text-muted text-center" style="font-size: 0.85rem;">
-            Listing is active on NGO feed in {{ listing.city }}.
+            <i class="bi bi-broadcast text-success"></i> Listing is active on NGO feed in {{ listing.city }}.
           </div>
         {% endif %}
 
@@ -136,19 +136,19 @@
             <form method="POST" action="{{ url_for('receiver.claim', id=listing.id) }}">
               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
               <button type="submit" class="btn btn-primary btn-block">
-                Claim Food Now 🍽️
+                <i class="bi bi-hand-index-thumb-fill"></i> Claim Food Now
               </button>
             </form>
           {% else %}
             <a href="{{ url_for('receiver.pending') }}" class="btn btn-outline btn-block">
-              Approval Pending
+              <i class="bi bi-clock-history"></i> Approval Pending
             </a>
           {% endif %}
         {% elif listing.status == 'DISPATCHED' and listing.claimed_by_id == current_user.id %}
           <form method="POST" action="{{ url_for('receiver.collect', id=listing.id) }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="btn btn-primary btn-block">
-              ✓ Confirm Food Collected
+              <i class="bi bi-check-circle-fill"></i> Confirm Food Collected
             </button>
           </form>
         {% elif listing.status == 'CLAIMED' and listing.claimed_by_id == current_user.id %}
@@ -157,16 +157,16 @@
           </div>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
             <a href="tel:{{ listing.donor.phone }}" class="btn btn-outline btn-sm">
-              📞 Call Donor
+              <i class="bi bi-telephone-fill"></i> Call Donor
             </a>
             <a href="https://wa.me/{{ listing.donor.phone | clean_phone }}?text={{ ('Hi ' ~ listing.donor.name ~ ', this is ' ~ current_user.name ~ ' from the NGO team. We have claimed your ' ~ listing.food_name ~ ' on MealBridge!') | urlencode }}" 
                target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-sm">
-              💬 WhatsApp
+              <i class="bi bi-whatsapp"></i> WhatsApp
             </a>
           </div>
         {% elif listing.status == 'COLLECTED' %}
           <div class="text-success text-center" style="font-size: 0.85rem; font-weight: 600;">
-            ✓ Collected & Closed
+            <i class="bi bi-check-circle-fill"></i> Collected & Closed
           </div>
         {% endif %}
       {% endif %}

@@ -114,6 +114,9 @@ def dispatch(id):
     listing.dispatched_at = utc_now()
     db.session.commit()
 
+    from app.notifications import notify_receiver_food_dispatched
+    notify_receiver_food_dispatched(listing)
+
     flash(
         f"PIN verified! Marked '{listing.food_name}' as Dispatched! The receiver can now confirm collection upon receipt.",
         "success",

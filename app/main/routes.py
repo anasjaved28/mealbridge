@@ -46,3 +46,29 @@ def dashboard():
         return redirect(url_for("admin.receivers"))
 
     return redirect(url_for("main.index"))
+
+
+@main_bp.route("/manifest.json")
+def manifest():
+    from flask import current_app, send_from_directory
+    return send_from_directory(
+        current_app.static_folder,
+        "manifest.json",
+        mimetype="application/manifest+json",
+    )
+
+
+@main_bp.route("/sw.js")
+def service_worker():
+    from flask import current_app, send_from_directory, make_response
+    response = make_response(
+        send_from_directory(
+            current_app.static_folder,
+            "sw.js",
+            mimetype="application/javascript",
+        )
+    )
+    # Allow service worker to control entire site from root scope
+    response.headers["Service-Worker-Allowed"] = "/"
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    return response
