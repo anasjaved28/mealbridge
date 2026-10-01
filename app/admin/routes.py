@@ -41,6 +41,9 @@ def approve(id):
     user.is_approved = True
     db.session.commit()
 
+    from app.notifications import notify_receiver_approved
+    notify_receiver_approved(user)
+
     flash(f"Receiver '{user.name}' ({user.email}) has been approved successfully.", "success")
     return redirect(url_for("admin.receivers"))
 

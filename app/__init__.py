@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template
 from config import config_by_name
-from app.extensions import db, login_manager, migrate, csrf
+from app.extensions import db, login_manager, migrate, csrf, mail
 from app.catalog import food_image
 from app.utils import time_left
 
@@ -23,6 +23,7 @@ def create_app(config_name="default"):
     login_manager.init_app(app)
     migrate.init_app(app, db)
     csrf.init_app(app)
+    mail.init_app(app)
 
     # Register Jinja globals and filters
     from app.utils import time_left, clean_phone

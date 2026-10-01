@@ -3,34 +3,21 @@
 {% block title %}Available Food Feed - MealBridge v1{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
   <div>
-    <h1 style="font-size: 1.75rem; font-weight: 800;">Available Food in {{ current_user.city }}</h1>
+    <h1 style="font-size: 1.75rem; font-weight: 800;">
+      <i class="bi bi-geo-alt-fill text-primary"></i> Available Food in {{ current_user.city }}
+    </h1>
     <p style="color: var(--gray-500); font-size: 0.95rem;">
       Fresh cooked meals ready for immediate claim and pickup by verified NGOs.
     </p>
   </div>
   <div>
     <a href="{{ url_for('receiver.my_claims') }}" class="btn btn-outline">
-      📋 View My Claims
+      <i class="bi bi-card-checklist"></i> View My Claims
     </a>
   </div>
 </div>
 
-{% if listings %}
-  <div class="listing-grid">
-    {% for listing in listings %}
-      {% include 'partials/listing_card.html' %}
-    {% endfor %}
-  </div>
-{% else %}
-  <div class="empty-state">
-    <div style="font-size: 3rem; margin-bottom: 1rem;">🍃</div>
-    <h3>No Open Food Listings in {{ current_user.city }} Right Now</h3>
-    <p>All surplus meals have been claimed or none are currently available. Check back soon!</p>
-    <a href="{{ url_for('receiver.feed') }}" class="btn btn-outline">
-      🔄 Refresh Feed
-    </a>
-  </div>
-{% endif %}
+{% include 'receiver/_feed_listings.html' %}
 {% endblock %}

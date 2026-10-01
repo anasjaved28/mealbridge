@@ -31,6 +31,15 @@ def feed():
         .order_by(Listing.created_at.desc())
         .all()
     )
+
+    # HTMX polling/partial request: return just the listings container
+    if request.headers.get("HX-Request"):
+        return render_template(
+            "receiver/_feed_listings.html",
+            listings=listings,
+            viewer_role=ROLE_RECEIVER,
+        )
+
     return render_template(
         "receiver/feed.html",
         listings=listings,
@@ -72,6 +81,12 @@ def claim(id):
             "warning",
         )
         return redirect(url_for("receiver.feed"))
+
+    # Send notification email to the donor
+    claimed_listing = db.session.get(Listing, id)
+    if claimed_listing:
+        from app.notifications import notify_donor_listing_claimed
+        notify_donor_listing_claimed(claimed_listing)
 
     flash(
         "Food listing claimed successfully! Please contact the donor using their phone number to coordinate pickup.",
@@ -118,6 +133,9 @@ def collect(id):
     listing.status = COLLECTED
     listing.collected_at = utc_now()
     db.session.commit()
+
+    from app.notifications import notify_donor_food_collected
+    notify_donor_food_collected(listing)
 
     flash(
         f"Thank you! You marked '{listing.food_name}' as Collected. The donation loop is complete!",
