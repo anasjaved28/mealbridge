@@ -2,7 +2,18 @@ from datetime import timedelta
 from flask import Blueprint, render_template, redirect, url_for, flash, abort, request
 from flask_login import current_user
 from app.extensions import db
-from app.models import Listing, User, OPEN, CLAIMED, DISPATCHED, COLLECTED, ROLE_DONOR, ROLE_ADMIN, utc_now
+from app.models import (
+    Listing,
+    User,
+    OPEN,
+    CLAIMED,
+    DISPATCHED,
+    COLLECTED,
+    EXPIRED,
+    ROLE_DONOR,
+    ROLE_ADMIN,
+    utc_now,
+)
 from app.catalog import FOODS, get_food
 from app.donor.forms import ListingForm
 from app.utils import role_required
@@ -13,16 +24,46 @@ donor_bp = Blueprint("donor", __name__)
 @donor_bp.route("/dashboard")
 @role_required(ROLE_DONOR)
 def dashboard():
+    now = utc_now()
+
+    # Automatically transition any past unclaimed open listings to EXPIRED
+    Listing.query.filter(
+        Listing.donor_id == current_user.id,
+        Listing.status == OPEN,
+        Listing.best_before <= now,
+    ).update({Listing.status: EXPIRED}, synchronize_session=False)
+    db.session.commit()
+
     # Retrieve listings created by current donor, newest first
     listings = (
         Listing.query.filter_by(donor_id=current_user.id)
         .order_by(Listing.created_at.desc())
         .all()
     )
+
+    # Calculate quick donor stats
+    active_count = sum(1 for l in listings if l.status in (OPEN, CLAIMED, DISPATCHED))
+    collected_count = sum(1 for l in listings if l.status == COLLECTED)
+    plates_rescued = sum(l.quantity for l in listings if l.status == COLLECTED)
+
+    # Support HTMX polling/partial update
+    if request.headers.get("HX-Request"):
+        return render_template(
+            "donor/_dashboard_listings.html",
+            listings=listings,
+            viewer_role=ROLE_DONOR,
+            active_count=active_count,
+            collected_count=collected_count,
+            plates_rescued=plates_rescued,
+        )
+
     return render_template(
         "donor/dashboard.html",
         listings=listings,
         viewer_role=ROLE_DONOR,
+        active_count=active_count,
+        collected_count=collected_count,
+        plates_rescued=plates_rescued,
     )
 
 

@@ -1,0 +1,68 @@
+<div id="live-donor-container"
+     hx-get="{{ url_for('donor.dashboard') }}"
+     hx-trigger="every 15s"
+     hx-target="#live-donor-container"
+     hx-swap="outerHTML">
+
+  <!-- HTMX Live Status Bar -->
+  <div class="feed-live-status-bar">
+    <div class="live-indicator">
+      <span class="pulse-dot"></span>
+      <span>Live Dashboard</span>
+      <span class="refresh-interval">• Auto-refreshes every 15s</span>
+    </div>
+    <span class="htmx-indicator live-spinner">
+      <i class="bi bi-arrow-repeat spin"></i> Checking for claim updates...
+    </span>
+  </div>
+
+  <!-- Metric Badges Row -->
+  <div class="stats-grid" style="margin-bottom: 2rem;">
+    <div class="stat-card">
+      <div class="stat-icon" style="background: var(--primary-light); color: var(--primary);">
+        <i class="bi bi-broadcast"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value">{{ active_count }}</span>
+        <span class="stat-label">Active / In Progress</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background: #ecfdf5; color: #059669;">
+        <i class="bi bi-check-circle-fill"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value">{{ collected_count }}</span>
+        <span class="stat-label">Pickups Completed</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon" style="background: #fef3c7; color: #d97706;">
+        <i class="bi bi-cup-hot-fill"></i>
+      </div>
+      <div class="stat-info">
+        <span class="stat-value">{{ plates_rescued }}</span>
+        <span class="stat-label">Total Plates Donated</span>
+      </div>
+    </div>
+  </div>
+
+  {% if listings %}
+    <div class="listing-grid">
+      {% for listing in listings %}
+        {% include 'partials/listing_card.html' %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="bi bi-basket text-primary"></i></div>
+      <h3>No Food Donations Posted Yet</h3>
+      <p>Do you have surplus cooked food today from an event, restaurant service, or mess?</p>
+      <a href="{{ url_for('donor.new_listing') }}" class="btn btn-primary">
+        <i class="bi bi-plus-circle-fill"></i> Post Your First Donation
+      </a>
+    </div>
+  {% endif %}
+</div>

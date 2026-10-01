@@ -15,6 +15,7 @@ class ListingForm(FlaskForm):
         validators=[DataRequired()],
         coerce=int,
         choices=QUANTITY_CHOICES,
+        validate_choice=False,
     )
     packaging_type = SelectField(
         "Packaging Type (Container / Packets)",

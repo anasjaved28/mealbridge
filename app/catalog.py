@@ -182,7 +182,9 @@ CITIES = [
 QUANTITY_CHOICES = [
     (10, "10 plates (serves ~10)"),
     (20, "20 plates (serves ~20)"),
+    (25, "25 plates (serves ~25)"),
     (30, "30 plates (serves ~30)"),
+    (40, "40 plates (serves ~40)"),
     (50, "50 plates (serves ~50)"),
     (75, "75 plates (serves ~75)"),
     (100, "100 plates (serves ~100)"),

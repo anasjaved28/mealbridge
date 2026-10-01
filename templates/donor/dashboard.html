@@ -3,34 +3,21 @@
 {% block title %}Donor Dashboard - MealBridge v1{% endblock %}
 
 {% block content %}
-<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
   <div>
-    <h1 style="font-size: 1.75rem; font-weight: 800;">Donor Food Dashboard</h1>
+    <h1 style="font-size: 1.75rem; font-weight: 800;">
+      <i class="bi bi-speedometer2 text-primary"></i> Donor Food Dashboard
+    </h1>
     <p style="color: var(--gray-500); font-size: 0.95rem;">
-      Track your active cooked meal donations, monitor claims, and confirm dispatches.
+      Track your active cooked meal donations, monitor claims, and confirm handovers with pickup PINs.
     </p>
   </div>
   <div>
     <a href="{{ url_for('donor.new_listing') }}" class="btn btn-primary" style="padding: 0.7rem 1.25rem;">
-      + Post Extra Food
+      <i class="bi bi-plus-circle-fill"></i> Post Extra Food
     </a>
   </div>
 </div>
 
-{% if listings %}
-  <div class="listing-grid">
-    {% for listing in listings %}
-      {% include 'partials/listing_card.html' %}
-    {% endfor %}
-  </div>
-{% else %}
-  <div class="empty-state">
-    <div style="font-size: 3rem; margin-bottom: 1rem;">🍲</div>
-    <h3>No Food Donations Posted Yet</h3>
-    <p>Do you have surplus cooked food today from an event, restaurant service, or mess?</p>
-    <a href="{{ url_for('donor.new_listing') }}" class="btn btn-primary">
-      Post Your First Donation
-    </a>
-  </div>
-{% endif %}
+{% include 'donor/_dashboard_listings.html' %}
 {% endblock %}
